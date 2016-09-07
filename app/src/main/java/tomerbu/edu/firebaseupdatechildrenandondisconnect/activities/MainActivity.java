@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         mDatabase.updateChildren(childUpdates);
     }*/
 
+    //TODO: Move to  Login Activity! and test it.
     private void init() {
         User user = new User(mCurrentUser.getUid(), mCurrentUser.getEmail(), true);
         HashMap<String, Object> connectedUpdates = new HashMap<>();
