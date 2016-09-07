@@ -1,4 +1,4 @@
-package tomerbu.edu.firebaseupdatechildrenandondisconnect;
+package tomerbu.edu.firebaseupdatechildrenandondisconnect.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -38,6 +38,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import tomerbu.edu.firebaseupdatechildrenandondisconnect.R;
 import tomerbu.edu.firebaseupdatechildrenandondisconnect.models.User;
 import tomerbu.edu.firebaseupdatechildrenandondisconnect.tools.Intents;
 
@@ -189,6 +190,7 @@ public class LoginActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         btnFace = (LoginButton) findViewById(R.id.btnFace);
+        btnFace.setReadPermissions("email", "public_profile");
         btnFace.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {

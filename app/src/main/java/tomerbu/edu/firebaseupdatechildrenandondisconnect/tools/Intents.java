@@ -3,8 +3,8 @@ package tomerbu.edu.firebaseupdatechildrenandondisconnect.tools;
 import android.content.Context;
 import android.content.Intent;
 
-import tomerbu.edu.firebaseupdatechildrenandondisconnect.LoginActivity;
-import tomerbu.edu.firebaseupdatechildrenandondisconnect.MainActivity;
+import tomerbu.edu.firebaseupdatechildrenandondisconnect.activities.LoginActivity;
+import tomerbu.edu.firebaseupdatechildrenandondisconnect.activities.MainActivity;
 
 /**
  * Created by tomerbuzaglo on 07/09/2016.

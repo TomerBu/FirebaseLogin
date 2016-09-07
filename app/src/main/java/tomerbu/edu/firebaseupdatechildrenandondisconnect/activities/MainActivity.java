@@ -1,4 +1,4 @@
-package tomerbu.edu.firebaseupdatechildrenandondisconnect;
+package tomerbu.edu.firebaseupdatechildrenandondisconnect.activities;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,20 +8,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import tomerbu.edu.firebaseupdatechildrenandondisconnect.models.Post;
+import tomerbu.edu.firebaseupdatechildrenandondisconnect.R;
+import tomerbu.edu.firebaseupdatechildrenandondisconnect.models.User;
 import tomerbu.edu.firebaseupdatechildrenandondisconnect.tools.Intents;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,36 +40,24 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null) {
                     mCurrentUser = firebaseAuth.getCurrentUser();
-                    Toast.makeText(getApplicationContext(), mCurrentUser.getUid(), Toast.LENGTH_SHORT).show();
+                    init();
                 } else {
                     Intents.gotoLogin(getApplicationContext());
-
                 }
             }
         });
-
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mCurrentUser != null)
-                    writeNewPost(mCurrentUser.getUid(), "Tomer", "Hello", "World");
-                else Toast.makeText(MainActivity.this, "Not Ready", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-
-    private void writeNewPost(String userId, String username, String title, String body) {
+/*    private void writeNewPost(String userId, String username, String title, String body) {
         // Create new post at /user-posts/$userid/$postid and at
         // /posts/$postid simultaneously
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -86,6 +72,26 @@ public class MainActivity extends AppCompatActivity {
         childUpdates.put("/user-posts/" + userId + "/" + pushKey, postValues);
 
         mDatabase.updateChildren(childUpdates);
+    }*/
+
+    private void init() {
+        User user = new User(mCurrentUser.getUid(), mCurrentUser.getEmail(), true);
+        HashMap<String, Object> connectedUpdates = new HashMap<>();
+        connectedUpdates.put("/Users/" + mCurrentUser.getUid(), user.toMap());
+        FirebaseDatabase.getInstance().getReference().updateChildren(connectedUpdates);
+
+
+        HashMap<String, Object> disconnectedUpdates = new HashMap<>();
+        User u = new User(mCurrentUser.getUid(), mCurrentUser.getEmail(), false);
+        disconnectedUpdates.put("/Users/" + mCurrentUser.getUid(), u.toMap());
+        FirebaseDatabase.getInstance().getReference().onDisconnect().updateChildren(disconnectedUpdates);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     @Override

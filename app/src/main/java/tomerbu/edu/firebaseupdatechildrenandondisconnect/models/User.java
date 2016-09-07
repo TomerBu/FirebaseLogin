@@ -4,10 +4,17 @@ package tomerbu.edu.firebaseupdatechildrenandondisconnect.models;
  * Created by stud27 on 20/07/16.
  */
 public class User extends BaseModel{
+    private boolean connected;
     private String email;
     private String UID;
 
-    public User() {
+
+
+
+    public User(String uid, String email, boolean connected) {
+        this.UID = uid;
+        this.email = email;
+        this.connected = connected;
     }
 
     public User(String UID, String email) {
@@ -29,5 +36,13 @@ public class User extends BaseModel{
 
     public void setUID(String UID) {
         this.UID = UID;
+    }
+
+    public boolean getConnected() {
+        return connected;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
     }
 }
