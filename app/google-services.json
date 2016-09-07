@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "740973135609",
+    "firebase_url": "https://updateondisconnect.firebaseio.com",
+    "project_id": "updateondisconnect",
+    "storage_bucket": "updateondisconnect.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:740973135609:android:ad800b6a5db2739a",
+        "android_client_info": {
+          "package_name": "tomerbu.edu.firebaseupdatechildrenandondisconnect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "740973135609-cfin62uj43iglmkvc55r9umfk6uajrbj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tomerbu.edu.firebaseupdatechildrenandondisconnect",
+            "certificate_hash": "7A10AD770C6F4EC3BE4D27DFCD880B8519D9D87D"
+          }
+        },
+        {
+          "client_id": "740973135609-de5a5o2lcfk278qsjhe179m8rhmtbi9o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7CU3XFipp7TVIdMnZzBi27R9rOZ9dLn8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "740973135609-de5a5o2lcfk278qsjhe179m8rhmtbi9o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
