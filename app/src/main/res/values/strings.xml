@@ -18,4 +18,5 @@
     <string name="action_logout">Log Out</string>
     <string name="action_register">Register</string>
     <string name="facebook_app_id">178661065900401</string>
+    <string name="title_job_list">JobList</string>
 </resources>

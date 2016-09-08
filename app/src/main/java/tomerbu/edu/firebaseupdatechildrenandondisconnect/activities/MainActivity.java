@@ -8,18 +8,27 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
+import com.firebase.jobdispatcher.Driver;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.Trigger;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 
 import tomerbu.edu.firebaseupdatechildrenandondisconnect.R;
 import tomerbu.edu.firebaseupdatechildrenandondisconnect.models.User;
+import tomerbu.edu.firebaseupdatechildrenandondisconnect.services.MyJobService;
 import tomerbu.edu.firebaseupdatechildrenandondisconnect.tools.Intents;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +44,11 @@ public class MainActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
+
+        DatabaseReference postsRef = FirebaseDatabase.getInstance().getReference("posts");
+        postsRef.keepSynced(true);
+
+
         FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -47,6 +61,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Driver myDriver = new GooglePlayDriver(this);
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(myDriver);
+
+
+        Job job = dispatcher.newJobBuilder()
+                .setService(MyJobService.class)
+                .setTag("my-tag")
+
+                .setTrigger(Trigger.executionWindow(10, 20))
+                .setLifetime(Lifetime.FOREVER) /*Lifetime.FOREVER : Lifetime.UNTIL_NEXT_BOOT*/
+                .setRecurring(true)
+
+                .build();
+
+        int result = dispatcher.schedule(job);
+        if (result != FirebaseJobDispatcher.SCHEDULE_RESULT_SUCCESS) {
+            // handle error
+            Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+        }
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -55,9 +89,23 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        //
+
+
     }
 
-/*    private void writeNewPost(String userId, String username, String title, String body) {
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+
+    /*    private void writeNewPost(String userId, String username, String title, String body) {
         // Create new post at /user-posts/$userid/$postid and at
         // /posts/$postid simultaneously
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
