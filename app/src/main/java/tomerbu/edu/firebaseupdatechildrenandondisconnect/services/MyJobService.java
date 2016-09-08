@@ -7,7 +7,7 @@ import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 
 public class MyJobService extends JobService {
-    private AsyncTask asyncTask;
+    private AsyncTask<Object, Object, Object> asyncTask;
 
     @Override
     public boolean onStartJob(final JobParameters job) {
@@ -20,7 +20,7 @@ public class MyJobService extends JobService {
             }
 
             protected void onPostExecute(Object result) {
-                Log.e("TomerBu", (String) result + " Finished");
+                Log.e("TomerBu",  result + " Finished");
                 jobFinished(job, false /* no need to reschedule, we're done */);
             }
         };

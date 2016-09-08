@@ -1,5 +1,10 @@
 package tomerbu.edu.firebaseupdatechildrenandondisconnect.activities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -8,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
@@ -21,11 +27,13 @@ import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.Trigger;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import org.joda.time.DateTime;
 
 import java.util.HashMap;
 
+import tomerbu.edu.firebaseupdatechildrenandondisconnect.MyReceiver;
 import tomerbu.edu.firebaseupdatechildrenandondisconnect.R;
 import tomerbu.edu.firebaseupdatechildrenandondisconnect.models.User;
 import tomerbu.edu.firebaseupdatechildrenandondisconnect.services.MyJobService;
@@ -34,6 +42,7 @@ import tomerbu.edu.firebaseupdatechildrenandondisconnect.tools.Intents;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseUser mCurrentUser;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +54,7 @@ public class MainActivity extends AppCompatActivity {
         AppEventsLogger.activateApp(this);
 
 
-        DatabaseReference postsRef = FirebaseDatabase.getInstance().getReference("posts");
-        postsRef.keepSynced(true);
-
-
-        FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null) {
@@ -59,12 +64,26 @@ public class MainActivity extends AppCompatActivity {
                     Intents.gotoLogin(getApplicationContext());
                 }
             }
-        });
+        };
 
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startAlert();
+            }
+        });
+        //
+
+
+    }
+
+    private void initJob() {
         Driver myDriver = new GooglePlayDriver(this);
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(myDriver);
 
-
+        //Create Your Job Definition
         Job job = dispatcher.newJobBuilder()
                 .setService(MyJobService.class)
                 .setTag("my-tag")
@@ -73,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 .setLifetime(Lifetime.FOREVER) /*Lifetime.FOREVER : Lifetime.UNTIL_NEXT_BOOT*/
                 .setRecurring(true)
 
+
                 .build();
 
         int result = dispatcher.schedule(job);
@@ -80,28 +100,46 @@ public class MainActivity extends AppCompatActivity {
             // handle error
             Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
         }
+    }
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+    public void startAlert() {
+        DateTime now = DateTime.now();
+
+        TimePickerDialog d = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
-            public void onClick(View view) {
+            public void onTimeSet(TimePicker timePicker, int hours, int minutes) {
+                DateTime after = DateTime.now();
+                after = after.withHourOfDay(hours);
+                after = after.withMinuteOfHour(minutes);
+                after = after.withSecondOfMinute(0);
 
+                Intent intent = new Intent(getApplicationContext(), MyReceiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                        234324243, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+                            after.getMillis(), pendingIntent);
+                } else {
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, after.getMillis(), pendingIntent);
+                }
             }
-        });
-        //
-
-
+        }, now.getHourOfDay(), now.getMinuteOfHour(), true);
+        d.show();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        FirebaseAuth.getInstance().addAuthStateListener(mAuthListener);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        FirebaseAuth.getInstance().removeAuthStateListener(mAuthListener);
     }
 
 

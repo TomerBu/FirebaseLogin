@@ -3,6 +3,7 @@ package tomerbu.edu.firebaseupdatechildrenandondisconnect;
 import android.app.Application;
 
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 /**
@@ -17,7 +18,10 @@ public class AppManager extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (!FirebaseApp.getApps(this).isEmpty())
+        if (!FirebaseApp.getApps(this).isEmpty()) {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            DatabaseReference postsRef = FirebaseDatabase.getInstance().getReference("posts");
+            postsRef.keepSynced(true);
+        }
     }
 }
