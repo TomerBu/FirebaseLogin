@@ -19,4 +19,5 @@
     <string name="action_register">Register</string>
     <string name="facebook_app_id">178661065900401</string>
     <string name="title_job_list">JobList</string>
+    <string name="action_dispatch_job">Dispatch Job</string>
 </resources>

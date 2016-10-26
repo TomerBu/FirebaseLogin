@@ -13,7 +13,7 @@ public class MyReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // TODO: This method is called when the BroadcastReceiver is receiving
+        // This method is called when the alarm is triggered.
         // an Intent broadcast.
 
         Log.e("TomerBu", "Alarm!!!!" + new Date().toString());

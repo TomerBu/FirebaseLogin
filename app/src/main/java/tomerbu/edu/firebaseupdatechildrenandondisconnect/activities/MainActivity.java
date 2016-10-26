@@ -88,17 +88,16 @@ public class MainActivity extends AppCompatActivity {
                 .setService(MyJobService.class)
                 .setTag("my-tag")
 
-                .setTrigger(Trigger.executionWindow(10, 20))
+                .setTrigger(Trigger.executionWindow(10, 20))//The (begin,end) time (in seconds) the job should be run in - Execution window
                 .setLifetime(Lifetime.FOREVER) /*Lifetime.FOREVER : Lifetime.UNTIL_NEXT_BOOT*/
                 .setRecurring(true)
-
-
+                //.setConstraints(Constraint.DEVICE_CHARGING, Constraint.ON_UNMETERED_NETWORK)
                 .build();
 
         int result = dispatcher.schedule(job);
         if (result != FirebaseJobDispatcher.SCHEDULE_RESULT_SUCCESS) {
             // handle error
-            Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Error " + result, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -189,11 +188,17 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_logout) {
-            FirebaseAuth.getInstance().signOut();
-            LoginManager.getInstance().logOut();
+        switch (id) {
+            case R.id.action_logout:
 
-            return true;
+                FirebaseAuth.getInstance().signOut();
+                LoginManager.getInstance().logOut();
+
+                return true;
+
+            case R.id.action_dispatch_job:
+                initJob();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

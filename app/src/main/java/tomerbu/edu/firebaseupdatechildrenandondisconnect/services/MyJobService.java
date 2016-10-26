@@ -6,6 +6,8 @@ import android.util.Log;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 
+import org.joda.time.DateTime;
+
 public class MyJobService extends JobService {
     private AsyncTask<Object, Object, Object> asyncTask;
 
@@ -15,7 +17,7 @@ public class MyJobService extends JobService {
         asyncTask = new AsyncTask<Object, Object, Object>() {
             protected Object doInBackground(Object... objects) {
                 /* do some work */
-                Log.e("TomerBu", "Working");
+                Log.e("TomerBu", "Working " + DateTime.now());
                 return "Working";
             }
 

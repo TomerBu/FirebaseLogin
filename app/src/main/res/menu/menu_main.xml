@@ -14,4 +14,11 @@
         android:orderInCategory="99"
         android:title="@string/action_logout"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_dispatch_job"
+        android:orderInCategory="98"
+        android:title="@string/action_dispatch_job"
+        app:showAsAction="never" />
+
 </menu>
