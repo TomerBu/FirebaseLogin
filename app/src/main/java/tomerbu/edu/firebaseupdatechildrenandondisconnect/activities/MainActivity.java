@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.joda.time.DateTime;
+import org.json.JSONException;
 
 import java.util.HashMap;
 
@@ -38,6 +39,7 @@ import tomerbu.edu.firebaseupdatechildrenandondisconnect.R;
 import tomerbu.edu.firebaseupdatechildrenandondisconnect.models.User;
 import tomerbu.edu.firebaseupdatechildrenandondisconnect.services.MyJobService;
 import tomerbu.edu.firebaseupdatechildrenandondisconnect.tools.Intents;
+import tomerbu.edu.firebaseupdatechildrenandondisconnect.tools.PushNotifications;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -95,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         int result = dispatcher.schedule(job);
+
+        //dispatcher.mustSchedule(job);  @throws ScheduleFailedException
         if (result != FirebaseJobDispatcher.SCHEDULE_RESULT_SUCCESS) {
             // handle error
             Toast.makeText(MainActivity.this, "Error " + result, Toast.LENGTH_SHORT).show();
@@ -159,6 +163,8 @@ public class MainActivity extends AppCompatActivity {
         mDatabase.updateChildren(childUpdates);
     }*/
 
+
+
     //TODO: Move to  Login Activity! and test it.
     private void init() {
         User user = new User(mCurrentUser.getUid(), mCurrentUser.getEmail(), true);
@@ -199,6 +205,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_dispatch_job:
                 initJob();
                 return true;
+            case R.id.action_settings:
+                try {
+                    PushNotifications.sendThePush();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
         }
 
         return super.onOptionsItemSelected(item);
