@@ -49,7 +49,6 @@ public class PushNotifications {
 
 
     public static void sendThePush() throws JSONException {
-
         JSONObject jsonObject = new JSONObject();
         JSONObject notificationPayload = new JSONObject();
 
@@ -64,9 +63,7 @@ public class PushNotifications {
         postPush("https://fcm.googleapis.com/fcm/send", jsonObject.toString(), new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-
                     }
-
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
                         if (response.isSuccessful()) {
@@ -76,8 +73,6 @@ public class PushNotifications {
                         }
                     }
                 }
-
         );
-
     }
 }

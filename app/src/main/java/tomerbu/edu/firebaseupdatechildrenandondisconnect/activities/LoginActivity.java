@@ -58,6 +58,8 @@ public class LoginActivity extends AppCompatActivity {
         //On Layout Click -> Hide keyboard
         hideKeyboardWhenNeeded();
 
+        FirebaseUser u;
+
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
 
